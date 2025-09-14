@@ -1,0 +1,13 @@
+{
+  "smartlead": {
+    "api_key": "YOUR_API_KEY",
+    "campaigns_base_url": "https://server.smartlead.ai/api/v1/campaigns",
+    "internal_email_accounts_base_url": "https://server.smartlead.ai/api/email-account",
+    "internal_bearer_token": "YOUR_BEARER_TOKEN",
+    "internal_page_size": 10000
+  },
+  "limits": {
+    "max_calls": 10,
+    "window_seconds": 2.0
+  }
+}

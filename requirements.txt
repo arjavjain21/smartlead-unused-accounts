@@ -1,0 +1,1 @@
+requests>=2.31.0streamlit>=1.36.0

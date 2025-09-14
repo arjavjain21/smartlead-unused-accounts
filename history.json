@@ -1,0 +1,30 @@
+[
+  {
+    "run_dir": "m:\\Downloads\\hyperke\\Automations\\smartlead_unused_accounts_toolkit\\runs\\2025-09-13T23-29-52Z",
+    "associated_unique_count": 8272,
+    "all_accounts_count": 26802,
+    "unused_accounts_count": 18530,
+    "disconnected_within_associated_count": 990
+  },
+  {
+    "run_dir": "M:\\Downloads\\hyperke\\Automations\\smartlead_gui_streamlit\\runs\\2025-09-14T13-04-49Z",
+    "associated_unique_count": 8272,
+    "all_accounts_count": 26802,
+    "unused_accounts_count": 18530,
+    "disconnected_within_associated_count": 992
+  },
+  {
+    "run_dir": "M:\\Downloads\\hyperke\\Automations\\smartlead_gui_streamlit\\runs\\2025-09-14T13-06-56Z",
+    "associated_unique_count": 8272,
+    "all_accounts_count": 26802,
+    "unused_accounts_count": 18530,
+    "disconnected_within_associated_count": 992
+  },
+  {
+    "run_dir": "M:\\Downloads\\hyperke\\Automations\\smartlead_gui_streamlit\\runs\\2025-09-14T13-07-30Z",
+    "associated_unique_count": 8272,
+    "all_accounts_count": 26802,
+    "unused_accounts_count": 18530,
+    "disconnected_within_associated_count": 992
+  }
+]

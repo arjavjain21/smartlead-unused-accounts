@@ -1,0 +1,12 @@
+2025-09-14 18:37:30,522 [INFO] Starting Smartlead Unused Accounts run
+2025-09-14 18:37:30,522 [INFO] Run directory: M:\Downloads\hyperke\Automations\smartlead_gui_streamlit\runs\2025-09-14T13-07-30Z
+2025-09-14 18:37:30,523 [INFO] Fetching campaigns
+2025-09-14 18:37:31,715 [INFO] Active campaigns: 479 written to M:\Downloads\hyperke\Automations\smartlead_gui_streamlit\runs\2025-09-14T13-07-30Z\01_active_campaigns.json
+2025-09-14 18:39:12,671 [INFO] Fetched internal accounts page 0 with 10000 rows (offset 0)
+2025-09-14 18:39:15,390 [INFO] Fetched internal accounts page 1 with 10000 rows (offset 10000)
+2025-09-14 18:39:16,796 [INFO] Fetched internal accounts page 2 with 6802 rows (offset 20000)
+2025-09-14 18:39:19,893 [INFO] Total unique accounts fetched: 26802
+2025-09-14 18:39:21,331 [INFO] Fetched disconnected accounts page 0 with 9215 rows (offset 0)
+2025-09-14 18:39:22,229 [INFO] Total disconnected accounts fetched: 9215
+2025-09-14 18:39:30,299 [INFO] Summary: {'associated_unique_count': 8272, 'all_accounts_count': 26802, 'unused_accounts_count': 18530, 'disconnected_within_associated_count': 992}
+2025-09-14 18:39:30,305 [INFO] Completed run. Summary: {'associated_unique_count': 8272, 'all_accounts_count': 26802, 'unused_accounts_count': 18530, 'disconnected_within_associated_count': 992}. Errors: {'errors_campaign_account_mapping': 0, 'errors_all_accounts': 0, 'errors_disconnected': 0}
