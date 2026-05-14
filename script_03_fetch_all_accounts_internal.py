@@ -15,7 +15,7 @@ def fetch_all_accounts_internal(project_root: str, run_dir: str) -> Tuple[List[D
     cfg = load_config(project_root)
     bearer = cfg["smartlead"]["internal_bearer_token"]
     base = cfg["smartlead"]["internal_email_accounts_base_url"].rstrip("/")
-    chunk = int(cfg["smartlead"].get("internal_page_size", 10000))
+    chunk = int(cfg["smartlead"].get("internal_page_size", 100))
     log = setup_logging(os.path.join(run_dir, "logs", "run.log"))
     http = HTTPClient(logger=log, max_calls_per_window=cfg["limits"]["max_calls"], window_seconds=cfg["limits"]["window_seconds"])
 
