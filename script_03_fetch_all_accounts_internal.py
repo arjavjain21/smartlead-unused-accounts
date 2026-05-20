@@ -23,6 +23,7 @@ def fetch_all_accounts_internal(project_root: str, run_dir: str) -> Tuple[List[D
     errors: List[Dict[str, Any]] = []
     offset = 0
     page_num = 0
+    seen_ids = set()
     while True:
         url = f"{base}/get-total-email-accounts"
         params = {"offset": offset, "limit": chunk}
@@ -34,9 +35,20 @@ def fetch_all_accounts_internal(project_root: str, run_dir: str) -> Tuple[List[D
                 raise RuntimeError("Unexpected internal all accounts payload")
             all_accounts.extend(page)
             log.info(f"Fetched internal accounts page {page_num} with {len(page)} rows (offset {offset})")
+            current_ids = {a.get("id") for a in page if isinstance(a, dict) and a.get("id") is not None}
+            new_ids = current_ids - seen_ids
+            if current_ids and not new_ids:
+                log.warning(
+                    "Stopping pagination because page returned only previously seen account IDs "
+                    f"(offset {offset}, page_size {len(page)}). "
+                    "This usually means the endpoint is capped and is repeating data."
+                )
+                break
+            seen_ids.update(current_ids)
             if len(page) < chunk:
                 break
-            offset += chunk
+            # Advance by actual rows returned to avoid skipping pages if API enforces a smaller limit than requested.
+            offset += len(page)
             page_num += 1
         except Exception as e:
             log.error(f"Internal accounts fetch failed at offset {offset}: {e}")
