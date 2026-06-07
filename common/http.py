@@ -46,6 +46,6 @@ class HTTPClient:
                 attempt += 1
                 if attempt > retries:
                     raise
-                delay = (backoff_base ** attempt) + random.uniform(0.05, 0.25)
+                delay = (backoff_base * (2 ** (attempt - 1))) + random.uniform(0.05, 0.25)
                 self.logger.warning(f"Request error on {url}. Attempt {attempt}/{retries}. Sleeping {delay:.2f}s. Error: {e}")
                 time.sleep(delay)
