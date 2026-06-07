@@ -2,7 +2,10 @@ import random
 import time
 from collections import deque
 from typing import Optional, Dict, Any
-import requests
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
+from urllib.request import Request, build_opener
+
 
 
 DEFAULT_HEADERS = {
@@ -35,11 +38,26 @@ class HTTPClient:
         self.session.headers.update(DEFAULT_HEADERS)
         self.timeout = timeout
 
+    def _build_url(self, url: str, params: Optional[Dict[str, Any]] = None) -> str:
+        if not params:
+            return url
+        query = urlencode(params)
+        separator = "&" if "?" in url else "?"
+        return f"{url}{separator}{query}"
+
+    def _read_error_body(self, exc: HTTPError) -> str:
+        try:
+            return exc.read().decode("utf-8", errors="replace")[:250]
+        except Exception:
+            return str(exc)
+
     def get_json(self, url: str, headers: Optional[Dict[str, str]] = None, params: Optional[Dict[str, Any]] = None,
                  retries: int = 5, backoff_base: float = 0.8) -> Any:
         attempt = 0
         while True:
             self.rate_limiter.wait()
+            request_url = self._build_url(url, params)
+            request = Request(request_url, headers=headers or {}, method="GET")
             try:
                 resp = self.session.get(url, headers=headers, params=params, timeout=self.timeout)
                 if resp.status_code == 429 or resp.status_code >= 500:
