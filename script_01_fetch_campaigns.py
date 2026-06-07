@@ -29,6 +29,6 @@ def fetch_active_campaigns(project_root: str, run_dir: str) -> List[Dict[str, An
 
 if __name__ == "__main__":
     from common.utils import make_run_dir
-    project_root = os.path.dirname(os.path.dirname(__file__))
+    project_root = os.path.dirname(os.path.abspath(__file__))
     run_dir = make_run_dir(project_root)
     fetch_active_campaigns(project_root, run_dir)
