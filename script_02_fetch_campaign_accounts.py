@@ -52,7 +52,7 @@ def fetch_accounts_per_campaign(project_root: str, run_dir: str, active_campaign
 if __name__ == "__main__":
     from common.utils import make_run_dir
     from script_01_fetch_campaigns import fetch_active_campaigns
-    project_root = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(os.path.dirname(__file__))
     run_dir = make_run_dir(project_root)
     active = fetch_active_campaigns(project_root, run_dir)
     fetch_accounts_per_campaign(project_root, run_dir, active)
