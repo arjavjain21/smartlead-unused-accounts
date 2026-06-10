@@ -1,18 +1,8 @@
-import random
 import time
+import random
 from collections import deque
 from typing import Optional, Dict, Any
-from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
-from urllib.request import Request, build_opener
-
-
-
-DEFAULT_HEADERS = {
-    "Accept": "application/json",
-    "User-Agent": "Mozilla/5.0 Smartlead-Unused-Accounts-Toolkit/1.0",
-}
-
+import requests
 
 class RateLimiter:
     def __init__(self, max_calls: int, period_seconds: float):
@@ -29,39 +19,24 @@ class RateLimiter:
             time.sleep(max(0.0, sleep_for))
         self.calls.append(time.time())
 
-
 class HTTPClient:
     def __init__(self, logger, max_calls_per_window=10, window_seconds=2.0, timeout=30):
         self.logger = logger
         self.rate_limiter = RateLimiter(max_calls_per_window, window_seconds)
         self.session = requests.Session()
-        self.session.headers.update(DEFAULT_HEADERS)
         self.timeout = timeout
-
-    def _build_url(self, url: str, params: Optional[Dict[str, Any]] = None) -> str:
-        if not params:
-            return url
-        query = urlencode(params)
-        separator = "&" if "?" in url else "?"
-        return f"{url}{separator}{query}"
-
-    def _read_error_body(self, exc: HTTPError) -> str:
-        try:
-            return exc.read().decode("utf-8", errors="replace")[:250]
-        except Exception:
-            return str(exc)
 
     def get_json(self, url: str, headers: Optional[Dict[str, str]] = None, params: Optional[Dict[str, Any]] = None,
                  retries: int = 5, backoff_base: float = 0.8) -> Any:
         attempt = 0
         while True:
             self.rate_limiter.wait()
-            request_url = self._build_url(url, params)
-            request = Request(request_url, headers=headers or {}, method="GET")
             try:
                 resp = self.session.get(url, headers=headers, params=params, timeout=self.timeout)
+                # Smartlead sometimes returns 200 with non-json, guard it
+                content_type = resp.headers.get("Content-Type", "")
                 if resp.status_code == 429 or resp.status_code >= 500:
-                    raise requests.HTTPError(f"HTTP {resp.status_code}: {resp.text[:250]}", response=resp)
+                    raise requests.HTTPError(f"HTTP {resp.status_code}: {resp.text[:250]}")
                 resp.raise_for_status()
                 try:
                     return resp.json()
@@ -71,6 +46,6 @@ class HTTPClient:
                 attempt += 1
                 if attempt > retries:
                     raise
-                delay = (backoff_base * (2 ** (attempt - 1))) + random.uniform(0.05, 0.25)
+                delay = (backoff_base ** attempt) + random.uniform(0.05, 0.25)
                 self.logger.warning(f"Request error on {url}. Attempt {attempt}/{retries}. Sleeping {delay:.2f}s. Error: {e}")
                 time.sleep(delay)

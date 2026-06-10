@@ -1,6 +1,8 @@
 
+import os
 import io
 import json
+import time
 import zipfile
 from pathlib import Path
 import streamlit as st
@@ -9,22 +11,6 @@ import sys
 
 TITLE = "Smartlead Unused Accounts - One Click Runner"
 BASE_DIR = Path(__file__).resolve().parent
-
-SECRET_KEY_PARTS = ("api_key", "token", "bearer", "secret", "password")
-
-
-def redact_secrets(value):
-    if isinstance(value, dict):
-        redacted = {}
-        for key, item in value.items():
-            if any(part in str(key).lower() for part in SECRET_KEY_PARTS):
-                redacted[key] = "***REDACTED***" if item else item
-            else:
-                redacted[key] = redact_secrets(item)
-        return redacted
-    if isinstance(value, list):
-        return [redact_secrets(item) for item in value]
-    return value
 
 st.set_page_config(page_title=TITLE, page_icon="📊", layout="centered")
 st.title(TITLE)
@@ -50,10 +36,7 @@ else:
         st.warning("No config.json found yet. Either upload one or create it manually.")
     else:
         with st.expander("Show current config.json"):
-            try:
-                st.code(json.dumps(redact_secrets(json.loads(cfg_file.read_text(encoding="utf-8"))), ensure_ascii=False, indent=2))
-            except Exception as e:
-                st.error(f"Could not read config.json: {e}")
+            st.code(cfg_file.read_text(encoding="utf-8"))
 
 st.divider()
 

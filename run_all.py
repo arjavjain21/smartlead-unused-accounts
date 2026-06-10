@@ -1,5 +1,5 @@
 import os
-from common.utils import make_run_dir
+from common.utils import make_run_dir, load_config
 from common.logging_config import setup_logging
 from script_01_fetch_campaigns import fetch_active_campaigns
 from script_02_fetch_campaign_accounts import fetch_accounts_per_campaign
@@ -12,6 +12,7 @@ def main():
     run_dir = make_run_dir(project_root)
     log = setup_logging(os.path.join(run_dir, "logs", "run.log"))
 
+    cfg = load_config(project_root)
     log.info("Starting Smartlead Unused Accounts run")
     log.info(f"Run directory: {run_dir}")
 
@@ -22,24 +23,13 @@ def main():
     mapping_rows, associated_ids, errors2 = fetch_accounts_per_campaign(project_root, run_dir, active_campaigns)
 
     # Step 3
-    all_accounts, errors3, all_accounts_diagnostics = fetch_all_accounts_internal(project_root, run_dir)
+    all_accounts, errors3 = fetch_all_accounts_internal(project_root, run_dir)
 
-    # Step 4a: disconnected accounts, derived from complete all-account data when possible
-    disconnected_accounts, errors4, disconnected_diagnostics = fetch_disconnected_accounts_internal(project_root, run_dir, all_accounts)
+    # Step 4a: disconnected accounts using internal filter
+    disconnected_accounts, errors4 = fetch_disconnected_accounts_internal(project_root, run_dir)
 
     # Step 4b: compute unused and exports
-    summary = compute_and_export(
-        project_root,
-        run_dir,
-        all_accounts,
-        mapping_rows,
-        associated_ids,
-        disconnected_accounts,
-        diagnostics={
-            "all_accounts": all_accounts_diagnostics,
-            "disconnected_accounts": disconnected_diagnostics,
-        },
-    )
+    summary = compute_and_export(project_root, run_dir, all_accounts, mapping_rows, associated_ids, disconnected_accounts)
 
     # Collect errors summary
     errors_summary = {
